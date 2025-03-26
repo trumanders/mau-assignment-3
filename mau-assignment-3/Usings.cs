@@ -1,0 +1,15 @@
+﻿global using mau_assignment_3.Interfaces;
+global using mau_assignment_3.Models;
+global using mau_assignment_3.Models.Birds;
+global using mau_assignment_3.Models.Enums;
+global using mau_assignment_3.Models.Enums.Animals;
+global using mau_assignment_3.Models.Mammals;
+global using mau_assignment_3.Models.Reptiles;
+global using mau_assignment_3.PageModels;
+global using mau_assignment_3.Services;
+global using Microsoft.Extensions.Logging;
+global using System.ComponentModel;
+global using System.Globalization;
+global using System.Runtime.CompilerServices;
+global using System.Windows.Input;
+global using System.Collections.ObjectModel;
