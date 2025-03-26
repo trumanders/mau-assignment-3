@@ -1,7 +1,9 @@
-﻿namespace mau_assignment_3.Services
+﻿namespace mau_assignment_3.Services;
 
 public class ListService<T> : IListService<T>
 {
+	private readonly List<T> _list = [];
+
 	public int Count
 	{ 
 		get => throw new NotImplementedException(); 
