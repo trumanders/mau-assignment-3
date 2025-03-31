@@ -1,4 +1,6 @@
-﻿namespace mau_assignment_3.PageModels;
+﻿using mau_assignment_3.Pages;
+
+namespace mau_assignment_3.PageModels;
 
 /// <summary>
 /// This class represents data and logic for MainPage. It has logic that
@@ -38,6 +40,7 @@ public partial class MainPageModel : INotifyPropertyChanged
 	private bool _isVenomous;
 	private bool _isSaveChangesEnabled;
 	private bool _allowSaveChanges;
+	private bool _isMainPageBlocked;
 
 	private DietTypesEnum _dietTypes;
 	private Gender? _gender;
@@ -50,6 +53,7 @@ public partial class MainPageModel : INotifyPropertyChanged
 	private string? _foodScheduleInfo;
 	private Animal? _selectedAnimal;
 	private Animal? _initialSelectedAnimal;
+	private FoodItemPage _foodItemPage;
 	#endregion
 
 	#region Public properties - Animal
@@ -472,6 +476,18 @@ public partial class MainPageModel : INotifyPropertyChanged
 	public ObservableCollection<Animal> Animals => _animalService.Animals;
 	public List<string> ValidationMessages { get; } = new();
 
+	public bool IsMainPageBlocked
+	{
+		get => _isMainPageBlocked;
+		set
+		{
+			if (_isMainPageBlocked != value)
+			{
+				_isMainPageBlocked = value;
+				OnPropertyChanged(value, nameof(IsMainPageBlocked));
+			}
+		}
+	}
 
 	/// <summary>
 	/// If category is changed manually by user, the selected species is set to null (no selection)
@@ -595,6 +611,7 @@ public partial class MainPageModel : INotifyPropertyChanged
 	public ICommand OnClearClickCommand { get; set; }
 	public ICommand OnAllAnimalInfoClickCommand { get; set; }
 	public ICommand OnFoodItemsClickCommand { get; set; }
+	public ICommand OnMainPageClickCommand { get; set; }
 
 
 	#endregion
@@ -742,6 +759,13 @@ public partial class MainPageModel : INotifyPropertyChanged
 	{
 		PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 	}
+
+	public void OnFoodItemPageClose()
+	{
+		IsMainPageBlocked = false;
+		_foodItemPage = null;
+	}
+
 	#endregion
 
 	#region Private methods
@@ -815,6 +839,15 @@ public partial class MainPageModel : INotifyPropertyChanged
 
 	private void InitializeCommands()
 	{
+		// When FoodItemPage is open, clicking inside MainPage activates the FoodItemPage
+		OnMainPageClickCommand = new Command(() =>
+		{
+			if (_foodItemPage != null)
+			{
+				Application.Current.ActivateWindow(_foodItemPage.Window);
+			}
+		});
+
 		// If save changes is enabled the method calls animal service
 		// to save the changes to the selected animal.
 		OnChangeAnimalClickCommand = new Command(() =>
@@ -865,19 +898,15 @@ public partial class MainPageModel : INotifyPropertyChanged
 			ClearUI();
 		});
 
-		// <summary>
 		// Clears the UI and disables the possibility for save changes to enable.
-		// </summary>
 		OnClearClickCommand = new Command(() =>
 		{
 			AllowSaveChanges = false;
 			ClearUI();
 		});
 
-		// <summary>
 		// Deletes the currently selected animal from the list of animals
 		// Notifies UI about the change and clears UI after deletion.
-		// </summary>
 		OnDeleteAnimalClickCommand = new Command(() =>
 		{
 			_animalService.Delete(SelectedAnimal!);
@@ -886,11 +915,8 @@ public partial class MainPageModel : INotifyPropertyChanged
 			ClearUI();
 		});
 
-		// <summary>
 		// Checks which sort button was clicked and calls service
 		// to sort the animal list based on the passed in sorting option
-		// </summary>
-		// <param name="obj">The sorting option that determines how to sort the animal list</param>
 		OnSortAnimalsClickCommand = new Command<object>((obj) =>
 		{
 			if (obj is SortOption sortOption)
@@ -908,31 +934,38 @@ public partial class MainPageModel : INotifyPropertyChanged
 			OnPropertyChanged(nameof(Animals));
 		});
 
-		// <summary>
 		// Removes the image from the UI
-		// </summary>
 		OnRemoveImageClickCommand = new Command(() =>
 		{
 			AnimalImage = null;
 		});
 
 
-		// <summary>
 		// Calls service to show all animal info strings
-		// </summary>
 		OnAllAnimalInfoClickCommand = new Command(() =>
 		{
 			_animalService.ShowAnimalInfoStrings();
 		});
 
 
+		// Opens the food item page
+		OnFoodItemsClickCommand = new Command(async () =>
+		{
+			IsMainPageBlocked = true;
+			if (_foodItemPage != null)
+			{
+				Application.Current.ActivateWindow(_foodItemPage.Window);
+				return;
+			}
 
-	//OnFoodItemsClickCommand = new Command(() =>
-	//{
-	//	FoodItemPage foodItemPage = new FoodItemPage();
-	//	if (foodItemPage.)
-	//}
-}
+			_foodItemPage = new FoodItemPage(this);
+
+			// Set this in the constructor instead?
+			var foodItemPage = new Window { Page = _foodItemPage, Title = "Food Items", Width = 700, Height = 500 };
+			Application.Current.OpenWindow(foodItemPage);
+			
+		});
+	}
 
 
 	#endregion

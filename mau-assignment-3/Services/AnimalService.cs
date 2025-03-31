@@ -60,7 +60,7 @@ public class AnimalService : IAnimalService
 	/// <param name="pageModel">The page model containing the selected species and other properties</param>
 	/// <returns>An animal instance with its properties set</returns>
 	/// <exception cref="ArgumentException">An exception is thrown if the selected species is invalid</exception>
-	private static Animal CreateAnimal(MainPageModel pageModel)
+	public static Animal CreateAnimal(MainPageModel pageModel)
 	{
 		var species = pageModel.SelectedSpecies!;
 		Animal animal = species switch
@@ -193,7 +193,7 @@ public class AnimalService : IAnimalService
 	/// </summary>
 	/// <param name="pageModel">The MainPageModel instance to be validated</param>
 	/// <returns>True: if validation is successful; False: if validation fails</returns>
-	private bool ValidateProperties(MainPageModel pageModel)
+	public bool ValidateProperties(MainPageModel pageModel)
 	{
 		if (!_propertyValidator.ValidateProperties(pageModel))
 		{
