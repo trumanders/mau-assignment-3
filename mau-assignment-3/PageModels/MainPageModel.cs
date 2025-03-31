@@ -594,20 +594,16 @@ public partial class MainPageModel : INotifyPropertyChanged
 	public ICommand OnChangeAnimalClickCommand { get; set; }
 	public ICommand OnClearClickCommand { get; set; }
 	public ICommand OnAllAnimalInfoClickCommand { get; set; }
+	public ICommand OnFoodItemsClickCommand { get; set; }
+
+
 	#endregion
 
 	#region Public methods
 	public MainPageModel(IAnimalService animalService)
 	{
 		_animalService = animalService;
-		OnAddAnimalClickCommand = new Command(OnAddAnimalClick);
-		OnSelectImageClickCommand = new Command(OnSelectImageClick);
-		OnRemoveImageClickCommand = new Command(OnRemoveImageClick);
-		OnSortAnimalsClickCommand = new Command(OnSortAnimalsClick);
-		OnDeleteAnimalClickCommand = new Command(OnDeleteAnimalClick);
-		OnChangeAnimalClickCommand = new Command(OnChangeAnimalClick);
-		OnClearClickCommand = new Command(OnClearClick);
-		OnAllAnimalInfoClickCommand = new Command(OnAllAnimalInfoClick);
+		InitializeCommands();
 	}	
 	
 	/// <summary>
@@ -749,110 +745,6 @@ public partial class MainPageModel : INotifyPropertyChanged
 	#endregion
 
 	#region Private methods
-	/// <summary>
-	/// Add an Animal object based on the PageModel's UI properties to the
-	/// Animal list by calling the Animal Service. If adding successful,
-	/// disable saving of changes and clear the UI
-	/// </summary>
-	private void OnAddAnimalClick()
-	{
-		if (!_animalService.Add(this))
-			return;
-
-		AllowSaveChanges = false;
-		ClearUI();				
-	}
-
-	/// <summary>
-	/// If save changes is enabled the method calls animal service
-	/// to save the changes to the selected animal.
-	/// </summary>
-	private void OnChangeAnimalClick()
-	{
-		if (IsSaveChangesEnabled)
-		{
-			_animalService.Edit(SelectedAnimal!, this);
-			OnPropertyChanged(nameof(Animals));
-			IsSaveChangesEnabled = false;
-		}
-	}
-
-	/// <summary>
-	/// Shows file picker to select an image to add to the UI
-	/// </summary>
-	private async void OnSelectImageClick()
-	{
-		var result = await FilePicker.PickAsync(new PickOptions
-		{
-			PickerTitle = "Select an image",
-			FileTypes = FilePickerFileType.Images
-		});
-
-		if (result == null)
-		{
-			return;
-		}
-
-		var stream = await result.OpenReadAsync();
-		AnimalImage = ImageSource.FromStream(() => stream);
-	}
-
-	/// <summary>
-	/// Removes the image from the UI
-	/// </summary>
-	private void OnRemoveImageClick()
-	{
-		AnimalImage = null;
-	}
-
-	/// <summary>
-	/// Checks which sort button was clicked and calls service
-	/// to sort the animal list based on the passed in sorting option
-	/// </summary>
-	/// <param name="obj">The sorting option that determines how to sort the animal list</param>
-	private void OnSortAnimalsClick(object obj)
-	{		
-		if (obj is SortOption sortOption)
-		{
-			if (sortOption == SortOption.Name)
-			{
-				_animalService.SortAnimals(SortOption.Name);
-			}
-
-			if (sortOption == SortOption.Species)
-			{
-				_animalService.SortAnimals(SortOption.Species);
-			}
-		}
-		OnPropertyChanged(nameof(Animals));
-	}
-
-	/// <summary>
-	/// Clears the UI and disables the possibility for save changes to enable.
-	/// </summary>
-	/// <param name="obj"></param>
-	private void OnClearClick(object obj)
-	{
-		AllowSaveChanges = false;
-		ClearUI();
-	}
-
-	/// <summary>
-	/// Deletes the currently selected animal from the list of animals
-	/// Notifies UI about the change and clears UI after deletion.
-	/// </summary>
-	private void OnDeleteAnimalClick()
-	{
-		_animalService.Delete(SelectedAnimal!);
-		OnPropertyChanged(nameof(Animals));
-		AllowSaveChanges = false;
-		ClearUI();
-	}
-
-	private void OnAllAnimalInfoClick()
-	{
-		_animalService.ShowAnimalInfoStrings();
-	}
 
 	/// <summary>
 	/// Resets the UI, empties all fields and selections
@@ -919,6 +811,129 @@ public partial class MainPageModel : INotifyPropertyChanged
 			if (newValue != initialSelectedAnimalValue)
 				IsSaveChangesEnabled = true;
 		}
-	}	
+	}
+
+	private void InitializeCommands()
+	{
+		// If save changes is enabled the method calls animal service
+		// to save the changes to the selected animal.
+		OnChangeAnimalClickCommand = new Command(() =>
+		{
+			if (IsSaveChangesEnabled)
+			{
+				_animalService.Edit(SelectedAnimal!, this);
+				OnPropertyChanged(nameof(Animals));
+				IsSaveChangesEnabled = false;
+			}
+		});
+
+		// Shows file picker to select an image to add to the UI
+		OnSelectImageClickCommand = new Command(async () =>
+		{
+			var result = await FilePicker.PickAsync(new PickOptions
+			{
+				PickerTitle = "Select an image",
+				FileTypes = FilePickerFileType.Images
+			});
+
+			if (result == null)
+			{
+				return;
+			}
+
+			var stream = await result.OpenReadAsync();
+			AnimalImage = ImageSource.FromStream(() => stream);
+		});
+
+		// Add an Animal object based on the PageModel's UI properties to the
+		// Animal list by calling the Animal Service. If adding successful,
+		// disable saving of changes and clear the UI
+		OnAddAnimalClickCommand = new Command(() =>
+		{
+			if (!_animalService.Add(this))
+				return;
+
+			AllowSaveChanges = false;
+			ClearUI();
+		});
+
+		OnDeleteAnimalClickCommand = new Command(() =>
+		{
+			_animalService.Delete(SelectedAnimal!);
+			OnPropertyChanged(nameof(Animals));
+			AllowSaveChanges = false;
+			ClearUI();
+		});
+
+		// <summary>
+		// Clears the UI and disables the possibility for save changes to enable.
+		// </summary>
+		OnClearClickCommand = new Command(() =>
+		{
+			AllowSaveChanges = false;
+			ClearUI();
+		});
+
+		// <summary>
+		// Deletes the currently selected animal from the list of animals
+		// Notifies UI about the change and clears UI after deletion.
+		// </summary>
+		OnDeleteAnimalClickCommand = new Command(() =>
+		{
+			_animalService.Delete(SelectedAnimal!);
+			OnPropertyChanged(nameof(Animals));
+			AllowSaveChanges = false;
+			ClearUI();
+		});
+
+		// <summary>
+		// Checks which sort button was clicked and calls service
+		// to sort the animal list based on the passed in sorting option
+		// </summary>
+		// <param name="obj">The sorting option that determines how to sort the animal list</param>
+		OnSortAnimalsClickCommand = new Command<object>((obj) =>
+		{
+			if (obj is SortOption sortOption)
+			{
+				if (sortOption == SortOption.Name)
+				{
+					_animalService.SortAnimals(SortOption.Name);
+				}
+
+				if (sortOption == SortOption.Species)
+				{
+					_animalService.SortAnimals(SortOption.Species);
+				}
+			}
+			OnPropertyChanged(nameof(Animals));
+		});
+
+		// <summary>
+		// Removes the image from the UI
+		// </summary>
+		OnRemoveImageClickCommand = new Command(() =>
+		{
+			AnimalImage = null;
+		});
+
+
+		// <summary>
+		// Calls service to show all animal info strings
+		// </summary>
+		OnAllAnimalInfoClickCommand = new Command(() =>
+		{
+			_animalService.ShowAnimalInfoStrings();
+		});
+
+
+
+	//OnFoodItemsClickCommand = new Command(() =>
+	//{
+	//	FoodItemPage foodItemPage = new FoodItemPage();
+	//	if (foodItemPage.)
+	//}
+}
+
+
 	#endregion
 }
