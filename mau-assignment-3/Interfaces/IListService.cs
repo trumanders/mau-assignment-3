@@ -2,6 +2,7 @@
 
 public interface IListService<T>
 {
+	ObservableCollection<T> Items { get; }
 	public int Count { get; set; }
 	public bool Add(T type); // mandatory
 
@@ -11,7 +12,7 @@ public interface IListService<T>
 
 	public void DeleteAll();
 
-	public void DeleteAt(int index);
+	public bool DeleteAt(int index);
 
 	public T GetAt(int index);
 

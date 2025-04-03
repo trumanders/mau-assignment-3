@@ -2,7 +2,9 @@
 
 public class ListService<T> : IListService<T>
 {
-	private readonly List<T> _list = [];
+	private readonly ObservableCollection<T> _items = [];
+
+	public ObservableCollection<T> Items => _items;
 
 	public int Count
 	{ 
@@ -10,27 +12,38 @@ public class ListService<T> : IListService<T>
 		set => throw new NotImplementedException();
 	}
 
-	public bool Add(T type)
+	public bool Add(T objectToAdd)
 	{
-		throw new NotImplementedException();
+		if (objectToAdd == null || _items ==  null || _items.Contains(objectToAdd))
+			return false;
+
+		_items.Add(objectToAdd);
+		return true;
 	}
 
-	public bool ChangeAt(T type, int index)
+	public bool ChangeAt(T newItem, int index)
 	{
-		throw new NotImplementedException();
+		if (index < 0 || index >= _items.Count)
+			return false;
+
+		_items[index] = newItem;
+		return true;
 	}
 
 	public bool CheckIndex(int index)
 	{
-		throw new NotImplementedException();
+		return index >= 0 && index < _items.Count;
 	}
 
-	public void DeleteAll()
+	public bool DeleteAt(int index)
 	{
-		throw new NotImplementedException();
-	}
+		if (!CheckIndex(index))
+			return false;
 
-	public void DeleteAt(int index)
+		_items.RemoveAt(index);
+		return true;
+	}
+	public void DeleteAll()
 	{
 		throw new NotImplementedException();
 	}
@@ -49,4 +62,6 @@ public class ListService<T> : IListService<T>
 	{
 		throw new NotImplementedException();
 	}
+
+
 }

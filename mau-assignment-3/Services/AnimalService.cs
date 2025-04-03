@@ -1,27 +1,22 @@
 ﻿namespace mau_assignment_3.Services;
 
-public class AnimalService : IAnimalService
+// I chose not to inherit from ListService, since it creates an unnecessary 
+// coupling between the AnimalService and the ListService. Injecting ListSerivce
+// here keeps the AnimalService decoupled from the ListService.
+public class AnimalService(
+	IListService<Animal> _listService,
+	IPropertyValidator _propertyValidator,
+	IAlertService _alertService) : IAnimalService
 {
 	#region Private fields
-	private IPropertyValidator _propertyValidator;
-	private IAlertService _alertService;
 	private static SortOption _previousSortOption;
 	private static bool _isReverseOrder = false;
 	private static bool _isAnimalAdded;
-
-	private ObservableCollection<Animal> _animals = [];
-
 	#endregion
 
-	public ObservableCollection<Animal> Animals => _animals;
+	public ObservableCollection<Animal> Animals => _listService.Items;
 
 	#region Public methods
-	public AnimalService(IPropertyValidator propertyValidator, IAlertService alertService)
-	{
-		_propertyValidator = propertyValidator;
-		_alertService = alertService;
-	}	
-
 	/// <summary>
 	/// Adds a validated animal to the list of animals based on the data from the page model
 	/// </summary>
@@ -32,25 +27,12 @@ public class AnimalService : IAnimalService
 		if (!ValidateProperties(pageModel))
 			return false;
 
-		try
-		{
-			var animal = CreateAnimal(pageModel);
+		var animal = CreateAnimal(pageModel);
 
-			if (animal == null)
-			{
-				return false;
-			}
+		_listService.Add(animal);
 
-			Animals.Add(animal);
-			_isAnimalAdded = true;
-
-			return true;
-		}
-		catch (Exception ex)
-		{
-			_alertService.ShowAlert("Error when adding animal!", ex.Message,"OK");
-			return false;
-		}
+		_isAnimalAdded = true;
+		return true;		
 	}
 
 	/// <summary>
@@ -88,33 +70,29 @@ public class AnimalService : IAnimalService
 	/// <returns></returns>
 	public bool Edit(Animal animal, MainPageModel pageModel)
 	{
+		bool success = true;
 		if (!ValidateProperties(pageModel))
 			return false;
 
-		try
+		// First check if species is changed in the UI
+		if (pageModel.SelectedSpecies?.ToString() != animal.Species.ToString())
 		{
-			if (pageModel.SelectedSpecies?.ToString() != animal.Species.ToString())
+			var originalIndex = Animals.IndexOf(animal);
+			var changedAnimal = CreateAnimal(pageModel);
+			
+			if (!_listService.ChangeAt(changedAnimal, originalIndex))
 			{
-				var changedAnimal = CreateAnimal(pageModel);
-				var originalIndex = _animals.IndexOf(animal);
-				if (originalIndex != -1)
-				{
-					_animals[originalIndex] = changedAnimal;
-				}
+				_alertService.ShowEditErrorAlert();
+				return false;
 			}
-			else
-			{
-				animal.MapFromPageModel(pageModel);
-			}
+		}
+		else
+		{
+			animal.MapFromPageModel(pageModel);
+		}
 				
-			_alertService.ShowAlert("Changes saved!", "Changes sucessfully saved.", "OK");
-			return true;
-		}
-		catch (Exception ex)
-		{
-			_alertService.ShowAlert("Error while editing animal!", ex.Message, "OK");
-			return false;
-		}
+		_alertService.ShowSuccessfulEditAlert();
+		return true;
 	}
 
 	/// <summary>
@@ -123,19 +101,18 @@ public class AnimalService : IAnimalService
 	/// <param name="animal">The animal to be removed from the list</param>
 	public void Delete(Animal animal)
 	{
+		var index = Animals.IndexOf(animal);
+
 		if (animal == null)
 		{
-			_alertService.ShowAlert("", "Please select an animal to delete.", "OK");
-
+			_alertService.ShowNoItemSelectedAlert();
+			return;
 		}
-		try
-		{
-			_animals.Remove(animal);
-		}
-		catch (Exception ex)
-		{
-			_alertService.ShowAlert("Error while deleting animal!", ex.Message, "OK");
 
+		if (!_listService.DeleteAt(index))
+		{
+			_alertService.ShowDeleteErrorAlert();
+			return;
 		}
 	}
 
@@ -159,12 +136,18 @@ public class AnimalService : IAnimalService
 				_isReverseOrder = false;
 		}
 
-		var sortedAnimals = _animals.ToList();
-		sortedAnimals.Sort(new AnimalComparer(sortOption, _isReverseOrder));
-		_animals = [.. sortedAnimals];
-		_previousSortOption = sortOption;
+		var sortedList = _listService
+			.Items.OrderBy(a => a, new AnimalComparer(sortOption, _isReverseOrder))
+			.ToList();
+
+	_listService.Items.Clear();
+	foreach (var item in sortedList)
+	{
+		_listService.Items.Add(item);
 	}
 
+		_previousSortOption = sortOption;
+	}
 
 
 	/// <summary>
@@ -178,14 +161,10 @@ public class AnimalService : IAnimalService
 	}
 
 	/// <summary>
-	/// Calls the IAlertService.ShowAlert method to display all animals' info
+	/// Calls the IAlertService to display all animals' info
 	/// </summary>
-	public void ShowAnimalInfoStrings()
-	{
-		var animalaInfoStrings = GetAnimalInfoStrings();
-		_alertService.ShowAlert("All animal info", string.Join("", animalaInfoStrings), "OK");
-	}
-	#endregion
+	public void ShowAnimalInfoStrings() =>
+		_alertService.ShowInfoStringsAlert(GetAnimalInfoStrings());
 
 	/// <summary>
 	/// Calls the IPropertyValidator.ValidateProperties method to validate the properties of
@@ -197,12 +176,12 @@ public class AnimalService : IAnimalService
 	{
 		if (!_propertyValidator.ValidateProperties(pageModel))
 		{
-			var errorMsg = _propertyValidator.GetValidationErrorMessages();
-			_alertService.ShowAlert("Invalid input!", errorMsg, "OK");
+			_alertService.ShowInvalidInputAlert(_propertyValidator.GetValidationErrorMessages());
 			return false;
 		}
 		return true;
 	}
+	#endregion
 
 	/// <summary>
 	/// Gathers all animals' info from its ToString()-method and returns them as a string array
@@ -210,7 +189,7 @@ public class AnimalService : IAnimalService
 	/// <returns>A string array containing all animals' info</returns>
 	private string[] GetAnimalInfoStrings()
 	{
-		var allAnimalInfo = _animals.Select(animal => GetAnimalInfo(animal) + Environment.NewLine + Environment.NewLine).ToArray();
+		var allAnimalInfo = Animals.Select(animal => GetAnimalInfo(animal) + Environment.NewLine + Environment.NewLine).ToArray();
 		return allAnimalInfo;
 	}
 
