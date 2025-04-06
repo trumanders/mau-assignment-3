@@ -14,10 +14,11 @@ public static class MauiProgram
 			});
 
 		builder.Services.AddTransient<MainPageModel>();
-		builder.Services.AddTransient<IAnimalService, AnimalService>();
-		builder.Services.AddTransient<IPropertyValidator, PropertyValidator>();
 		builder.Services.AddTransient<IAlertService, AlertService>();
-		builder.Services.AddTransient(typeof(IListService<>), typeof(ListService<>)); 
+		builder.Services.AddTransient<IAnimalService, AnimalService>();
+		builder.Services.AddTransient(typeof(IListService<>), typeof(ListService<>));
+		builder.Services.AddTransient<IFoodScheduleService, FoodScheduleService>();
+		builder.Services.AddTransient<IPropertyValidator, PropertyValidator>();
 
 #if DEBUG
 		builder.Logging.AddDebug();

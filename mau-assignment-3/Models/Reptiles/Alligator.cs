@@ -6,11 +6,6 @@ public class Alligator : Reptile
 
 	private FoodSchedule? _foodSchedule;
 
-	public Alligator()
-	{
-		SetFoodSchedule();
-	}
-
 	public void Float()
 	{
 		throw new NotImplementedException();
@@ -36,12 +31,5 @@ public class Alligator : Reptile
 	public override FoodSchedule GetFoodSchedule()
 	{
 		return _foodSchedule;
-	}
-	private void SetFoodSchedule()
-	{
-		_foodSchedule = new FoodSchedule();
-		_foodSchedule.Add("Morning: Whole fish (catfish, carp, tilapia)");
-		_foodSchedule.Add("Lunch: Chicken or turkey (whole or parts, like wings, necks)");
-		_foodSchedule.Add("Evening: Occasional mammal meat (rabbits, rodents)");
 	}
 }

@@ -1,6 +1,6 @@
 ﻿namespace mau_assignment_3.PageModels
 {
-	public partial class FoodItemPageModel : INotifyPropertyChanged
+	public partial class FoodSchedulePageModel : INotifyPropertyChanged
 	{
 		private TaskCompletionSource<bool> _taskCompletionSource;
 

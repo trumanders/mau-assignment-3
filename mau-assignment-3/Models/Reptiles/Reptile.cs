@@ -21,6 +21,4 @@ public abstract class Reptile : Animal
 			$"{base.ToString()}" +
 			$"Typical number of eggs laid: {TypicalNumberOfEggsLaid}\n";
 	}
-
-
 }

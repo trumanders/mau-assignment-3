@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+	x:Class="mau_assignment_3.Pages.FoodSchedulePage"
+	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:pageModels="clr-namespace:mau_assignment_3.PageModels"
+	Title="FoodSchedulePage"
+	x:DataType="pageModels:FoodSchedulePageModel">
+	<ContentPage.Resources>
+		<ResourceDictionary>
+			<Style TargetType="Label">
+				<Setter Property="FontSize" Value="16" />
+			</Style>
+			<Style TargetType="Entry">
+				<Setter Property="FontSize" Value="16" />
+			</Style>
+		</ResourceDictionary>
+	</ContentPage.Resources>
+	<Grid Padding="30">
+		<Border Padding="20">
+			<VerticalStackLayout>
+				<HorizontalStackLayout HorizontalOptions="Start">
+					<VerticalStackLayout Spacing="20" WidthRequest="170">
+
+						<!--  Name  -->
+						<Label Text="Name" VerticalOptions="Center" />
+						<Label Text="Add ingredient" VerticalOptions="Center" />
+						<Label Text="Ingredient" VerticalOptions="Center" />
+
+						<!--  BUTTONS  -->
+						<!--  Add  -->
+						<Border
+							BackgroundColor="AliceBlue"
+							HeightRequest="30"
+							HorizontalOptions="Start"
+							Stroke="Black"
+							StrokeThickness="1"
+							WidthRequest="80">
+							<!--<Border.GestureRecognizers>
+								<TapGestureRecognizer Command="{Binding OnSortAnimalsClickCommand}" CommandParameter="{x:Static enums:SortOption.Name}" />
+							</Border.GestureRecognizers>-->
+							<Label
+								FontSize="12"
+								HorizontalOptions="Center"
+								Text="Add"
+								VerticalOptions="Center" />
+						</Border>
+
+						<!--  Change  -->
+						<Border
+							BackgroundColor="AliceBlue"
+							HeightRequest="30"
+							HorizontalOptions="Start"
+							Stroke="Black"
+							StrokeThickness="1"
+							WidthRequest="80">
+							<!--<Border.GestureRecognizers>
+								<TapGestureRecognizer Command="{Binding OnSortAnimalsClickCommand}" CommandParameter="{x:Static enums:SortOption.Name}" />
+							</Border.GestureRecognizers>-->
+							<Label
+								FontSize="12"
+								HorizontalOptions="Center"
+								Text="Change"
+								VerticalOptions="Center" />
+						</Border>
+
+						<!--  Delete  -->
+						<Border
+							BackgroundColor="AliceBlue"
+							HeightRequest="30"
+							HorizontalOptions="Start"
+							Stroke="Black"
+							StrokeThickness="1"
+							WidthRequest="80">
+							<!--<Border.GestureRecognizers>
+								<TapGestureRecognizer Command="{Binding OnSortAnimalsClickCommand}" CommandParameter="{x:Static enums:SortOption.Name}" />
+							</Border.GestureRecognizers>-->
+							<Label
+								FontSize="12"
+								HorizontalOptions="Center"
+								Text="Delete"
+								VerticalOptions="Center" />
+						</Border>
+					</VerticalStackLayout>
+					<VerticalStackLayout Spacing="20" WidthRequest="250">
+						<Entry Margin="0,0,0,3" />
+						<Entry />
+					</VerticalStackLayout>
+				</HorizontalStackLayout>
+			</VerticalStackLayout>
+		</Border>
+	</Grid>
+</ContentPage>

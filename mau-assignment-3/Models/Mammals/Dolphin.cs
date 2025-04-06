@@ -7,11 +7,6 @@ public class Dolphin : Mammal
 
 	private FoodSchedule? _foodSchedule;
 
-	public Dolphin()
-	{
-		SetFoodSchedule();
-	}
-
 	public void Communicate()
 	{
 		throw new NotImplementedException();
@@ -41,12 +36,5 @@ public class Dolphin : Mammal
 	public override FoodSchedule GetFoodSchedule()
 	{
 		return _foodSchedule;
-	}
-	private void SetFoodSchedule()
-	{
-		_foodSchedule = new FoodSchedule();
-		_foodSchedule.Add("Morning: Fish (sardines, mackerel, anchovies)");
-		_foodSchedule.Add("Lunch: Squid, shrimp, or other shellfish");
-		_foodSchedule.Add("Evening: Fish or squid, occasional enrichment feeding with larger prey");
 	}
 }

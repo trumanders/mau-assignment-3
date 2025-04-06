@@ -1,6 +1,7 @@
 ﻿namespace mau_assignment_3.Services;
 
-// I chose not to inherit from ListService, since it creates an unnecessary 
+// I chose not to inherit from ListService, since the methods in AnimalService
+// have Animal specific logic, and since it creates an unnecessary 
 // coupling between the AnimalService and the ListService. Injecting ListSerivce
 // here keeps the AnimalService decoupled from the ListService.
 public class AnimalService(
@@ -15,6 +16,7 @@ public class AnimalService(
 	#endregion
 
 	public ObservableCollection<Animal> Animals => _listService.Items;
+	public Dictionary<Animal, FoodSchedule> AnimalFoodSchedules { get; set; } = [];
 
 	#region Public methods
 	/// <summary>
@@ -27,12 +29,16 @@ public class AnimalService(
 		if (!ValidateProperties(pageModel))
 			return false;
 
+		
 		var animal = CreateAnimal(pageModel);
+
+		if (pageModel.SelectedFoodSchedule != null)
+			AnimalFoodSchedules.Add(animal, pageModel.SelectedFoodSchedule);
 
 		_listService.Add(animal);
 
 		_isAnimalAdded = true;
-		return true;		
+		return true;
 	}
 
 	/// <summary>
@@ -74,24 +80,27 @@ public class AnimalService(
 		if (!ValidateProperties(pageModel))
 			return false;
 
-		// First check if species is changed in the UI
+		// Check if species is changed in the UI
 		if (pageModel.SelectedSpecies?.ToString() != animal.Species.ToString())
 		{
 			var originalIndex = Animals.IndexOf(animal);
 			var changedAnimal = CreateAnimal(pageModel);
-			
+
 			if (!_listService.ChangeAt(changedAnimal, originalIndex))
 			{
 				_alertService.ShowEditErrorAlert();
 				return false;
 			}
+			AnimalFoodSchedules.Add(changedAnimal, pageModel.SelectedFoodSchedule);
 		}
 		else
 		{
 			animal.MapFromPageModel(pageModel);
 		}
-				
-		_alertService.ShowSuccessfulEditAlert();
+
+		_alertService.ShowSuccessfulEditAlert();			
+		AnimalFoodSchedules[animal] = pageModel.SelectedFoodSchedule;
+		
 		return true;
 	}
 
@@ -123,12 +132,14 @@ public class AnimalService(
 	/// <param name="sortOption">The sort option that determines how the list should be sorted</param>
 	public void SortAnimals(SortOption sortOption)
 	{
+		// If sorting after adding animal, always sort in ascending order
 		if (_isAnimalAdded)
 		{
 			_isReverseOrder = false;
 			_isAnimalAdded = false;
 		}
 		else
+		// Toggle between ascending and descending
 		{
 			if (sortOption == _previousSortOption)
 				_isReverseOrder = !_isReverseOrder;
@@ -136,15 +147,17 @@ public class AnimalService(
 				_isReverseOrder = false;
 		}
 
+		// Create new sorted list
 		var sortedList = _listService
 			.Items.OrderBy(a => a, new AnimalComparer(sortOption, _isReverseOrder))
 			.ToList();
 
-	_listService.Items.Clear();
-	foreach (var item in sortedList)
-	{
-		_listService.Items.Add(item);
-	}
+		// Replace old list with new sorted list
+		_listService.Items.Clear();
+		foreach (var item in sortedList)
+		{
+			_listService.Items.Add(item);
+		}
 
 		_previousSortOption = sortOption;
 	}
@@ -155,7 +168,9 @@ public class AnimalService(
 	/// </summary>
 	/// <param name="index">The index of the animal</param>
 	/// <returns>The animal at the specified index</returns>
-	public Animal GetAnimalAt(int index) // Not implemented (not described in assignment)
+	// Not implemented since SelectedAnimal is set directly from the UI when
+	// selecting an animal from the ListView
+	public Animal GetAnimalAt(int index)
 	{
 		return Animals[index];
 	}
@@ -172,7 +187,7 @@ public class AnimalService(
 	/// </summary>
 	/// <param name="pageModel">The MainPageModel instance to be validated</param>
 	/// <returns>True: if validation is successful; False: if validation fails</returns>
-	public bool ValidateProperties(MainPageModel pageModel)
+	private bool ValidateProperties(MainPageModel pageModel)
 	{
 		if (!_propertyValidator.ValidateProperties(pageModel))
 		{

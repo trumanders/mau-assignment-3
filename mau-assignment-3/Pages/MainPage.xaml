@@ -664,7 +664,21 @@
 						MaximumHeightRequest="200"
 						Source="{Binding AnimalImage}"
 						WidthRequest="300" />
+
+					<!--  Food schedule  -->
+					<Label
+						Margin="0,0,0,0"
+						FontAttributes="Bold"
+						Text="Food Schedule" />
+					<ScrollView>
+						<Editor
+							HeightRequest="170"
+							IsReadOnly="true"
+							Text="{Binding FoodSchedule}"
+							VerticalTextAlignment="Start" />
+					</ScrollView>
 				</VerticalStackLayout>
+
 				<VerticalStackLayout WidthRequest="440">
 
 					<!--  Animal collection  -->
@@ -688,22 +702,6 @@
 								FontSize="12"
 								HorizontalOptions="Center"
 								Text="Show all animal info"
-								VerticalOptions="Center" />
-						</Border>
-						<Border
-							Margin="0,0,0,10"
-							Padding="8"
-							BackgroundColor="AliceBlue"
-							HeightRequest="40"
-							Stroke="Black"
-							StrokeThickness="1">
-							<Border.GestureRecognizers>
-								<TapGestureRecognizer Command="{Binding OnFoodItemsClickCommand}" />
-							</Border.GestureRecognizers>
-							<Label
-								FontSize="12"
-								HorizontalOptions="Center"
-								Text="Food items"
 								VerticalOptions="Center" />
 						</Border>
 					</HorizontalStackLayout>
@@ -879,16 +877,96 @@
 							</Border>
 						</VerticalStackLayout>
 					</HorizontalStackLayout>
-					<!--  Food schedule  -->
-					<Label
-						Margin="0,0,0,10"
-						FontAttributes="Bold"
-						Text="Food Schedule" />
-					<Editor
-						HeightRequest="170"
-						IsReadOnly="true"
-						Text="{Binding FoodScheduleInfo}"
-						VerticalTextAlignment="Start" />
+
+					<!--  Food Schedule Collection header  -->
+					<HorizontalStackLayout Spacing="20">
+						<Label
+							FontAttributes="Bold"
+							HorizontalOptions="Start"
+							Text="Food schedules collection"
+							VerticalOptions="Center" />
+						<Border
+							Margin="0,0,0,10"
+							Padding="8"
+							BackgroundColor="AliceBlue"
+							HeightRequest="40"
+							Stroke="Black"
+							StrokeThickness="1">
+							<Border.GestureRecognizers>
+								<TapGestureRecognizer Command="{Binding OnAddScheduleToAnimalClickCommand}" />
+							</Border.GestureRecognizers>
+							<Label
+								FontSize="12"
+								HorizontalOptions="Center"
+								Text="Add to animal"
+								TextColor="{Binding IsAddFoodScheduleEnabled, Converter={StaticResource BoolToGrayConverter}}"
+								VerticalOptions="Center" />
+						</Border>
+						<Border
+							Margin="0,0,0,10"
+							Padding="8"
+							BackgroundColor="AliceBlue"
+							HeightRequest="40"
+							Stroke="Black"
+							StrokeThickness="1">
+							<Border.GestureRecognizers>
+								<TapGestureRecognizer Command="{Binding OnFoodSchedulesClickCommand}" />
+							</Border.GestureRecognizers>
+							<Label
+								FontSize="12"
+								HorizontalOptions="Center"
+								Text="Food schedules"
+								VerticalOptions="Center" />
+						</Border>
+					</HorizontalStackLayout>
+
+					<!--  Food Schedule Collection  -->
+					<Border Margin="0,0,0,20" Padding="10">
+						<ListView
+							Margin="0,0,0,20"
+							HeightRequest="400"
+							HorizontalOptions="Start"
+							ItemTapped="OnFoodScheduleItemClick"
+							ItemsSource="{Binding FoodSchedules}"
+							SelectedItem="{Binding SelectedFoodSchedule, Mode=TwoWay}"
+							SelectionMode="Single"
+							WidthRequest="300">
+							<ListView.Header>
+								<StackLayout>
+									<Grid ColumnDefinitions="0.7*,0.3*">
+										<Label
+											Grid.Row="0"
+											Grid.Column="0"
+											HorizontalOptions="Start"
+											Text="Schedule Name" />
+										<!--<Label
+											Grid.Row="0"
+											Grid.Column="1"
+											HorizontalOptions="Start"
+											Text="Species" />-->
+									</Grid>
+									<BoxView BackgroundColor="Gray" HeightRequest="1" />
+								</StackLayout>
+							</ListView.Header>
+							<ListView.ItemTemplate>
+								<DataTemplate x:DataType="models:FoodSchedule">
+									<ViewCell>
+										<Grid Padding="10" ColumnDefinitions="0.7*,0.3*">
+											<Label
+												Grid.Row="1"
+												Grid.Column="0"
+												Text="{Binding Name}" />
+											<!--<Label
+												Grid.Row="1"
+												Grid.Column="1"
+												Text="{Binding Species}" />-->
+										</Grid>
+									</ViewCell>
+								</DataTemplate>
+							</ListView.ItemTemplate>
+						</ListView>
+					</Border>
+
 				</VerticalStackLayout>
 			</HorizontalStackLayout>
 		</ScrollView>

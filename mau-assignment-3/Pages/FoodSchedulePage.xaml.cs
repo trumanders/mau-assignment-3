@@ -1,9 +1,9 @@
 namespace mau_assignment_3.Pages;
 
-public partial class FoodItemPage : ContentPage
+public partial class FoodSchedulePage : ContentPage
 {
 	MainPageModel _mainPageModel;
-	public FoodItemPage(MainPageModel mainPageModel)
+	public FoodSchedulePage(MainPageModel mainPageModel)
 	{
 		InitializeComponent();
 		_mainPageModel = mainPageModel;
@@ -13,6 +13,6 @@ public partial class FoodItemPage : ContentPage
 	protected override void OnDisappearing()
 	{
 		base.OnDisappearing();
-		_mainPageModel.OnFoodItemPageClose();
+		_mainPageModel.OnFoodSchedulePageClose();
 	}
 }

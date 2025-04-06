@@ -7,11 +7,6 @@ public class Gorilla : Mammal
 
 	private FoodSchedule? _foodSchedule;
 
-	public Gorilla()
-	{
-		SetFoodSchedule();
-	}
-
 	public void ChestDrum()
 	{
 		throw new NotImplementedException();
@@ -35,12 +30,5 @@ public class Gorilla : Mammal
 			$"Arm span: {(ArmSpanInCentimeters == null
 				? "" : (ArmSpanInCentimeters + (ArmSpanInCentimeters > 1 ? " centimeters" : " centimeter")))}\n" +
 			$"Alpha male: {(IsAlphaMale ? "Yes" : "No")}\n";
-	}
-	private void SetFoodSchedule()
-	{
-		_foodSchedule = new FoodSchedule();
-		_foodSchedule.Add("Morning: Fresh fruits (bananas, apples, pineapple), leafy greens");
-		_foodSchedule.Add("Lunch: Vegetables (carrots, corn, yams), nuts, seeds");
-		_foodSchedule.Add("Evening: Leafy greens (kale, spinach), protein-rich items (tofu, beans)");
 	}
 }

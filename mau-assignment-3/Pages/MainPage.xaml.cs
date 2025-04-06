@@ -58,4 +58,12 @@ public partial class MainPage : ContentPage
 			(BindingContext as MainPageModel)?.PopulateGUIFromSelectedAnimal(selectedAnimal);
 		}
 	}
+
+	private void OnFoodScheduleItemClick(object sender, ItemTappedEventArgs e)
+	{
+		if (e.Item is FoodSchedule)
+		{
+			_pageModel.IsAddFoodScheduleEnabled = true;
+		}
+	}
 }

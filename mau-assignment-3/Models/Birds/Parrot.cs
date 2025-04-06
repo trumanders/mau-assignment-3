@@ -6,11 +6,6 @@ public class Parrot : Bird
 	public bool IsTrainedForPerformance { get; set; }
 	private FoodSchedule? _foodSchedule;
 
-
-	public Parrot()
-	{
-		SetFoodSchedule();
-	}
 	public void Mimic()
 	{
 		throw new NotImplementedException();
@@ -38,12 +33,5 @@ public class Parrot : Bird
 	public override FoodSchedule GetFoodSchedule()
 	{
 		return _foodSchedule;
-	}
-	private void SetFoodSchedule()
-	{
-		_foodSchedule = new FoodSchedule();
-		_foodSchedule.Add("Morning: Fresh fruits (bananas, mango, apples) and nuts");
-		_foodSchedule.Add("Lunch: Vegetables (carrots, leafy greens) and cooked grains");
-		_foodSchedule.Add("Evening: Pellets and seeds, occasional boiled egg for protein");
 	}
 }

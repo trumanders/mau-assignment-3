@@ -7,11 +7,6 @@ public class Chameleon : Reptile
 
 	private FoodSchedule? _foodSchedule;
 
-	public Chameleon()
-	{
-		SetFoodSchedule();
-	}
-
 	public void Camouflage()
 	{
 		throw new NotImplementedException();
@@ -35,12 +30,5 @@ public class Chameleon : Reptile
 			$"Tongue length : {(TongueLengthInMillimeters == null
 				? "" : (TongueLengthInMillimeters + (TongueLengthInMillimeters > 1 ? " millimeters" : " millimeter")))}\n" +
 			$"Regrown tail: {(HasRegrownTail ? "Yes" : "No")}\n";
-	}
-	private void SetFoodSchedule()
-	{
-		_foodSchedule = new FoodSchedule();
-		_foodSchedule.Add("Morning: Insects (crickets, roaches, locusts)");
-		_foodSchedule.Add("Lunch: Leafy greens (dandelion greens, collard greens)");
-		_foodSchedule.Add("Evening: Small insects, occasional fruit (berries, mangoes)");
 	}
 }

@@ -5,10 +5,6 @@ public class Bat : Mammal
 	public int? WingAreaInCm2 { get; set; }
 
 	private FoodSchedule? _foodSchedule;
-	public Bat()
-	{
-		SetFoodSchedule();
-	}
 
 	public void Echolocate()
 	{
@@ -34,12 +30,5 @@ public class Bat : Mammal
 		return
 			$"{base.ToString()}" +
 			$"Wing area: {(WingAreaInCm2 == null ? "" : WingAreaInCm2 + " cm²")}\n";
-	}
-	private void SetFoodSchedule()
-	{
-		_foodSchedule = new FoodSchedule();
-		_foodSchedule.Add("Morning: Fruit (bananas, mangoes, berries)");
-		_foodSchedule.Add("Lunch: Insects (moths, beetles, crickets)");
-		_foodSchedule.Add("Evening: Mealworms, nectar, and other small fruits");
 	}
 }

@@ -2,14 +2,10 @@
 
 public class Komodo : Reptile
 {
+	private FoodSchedule? _foodSchedule;
+	
 	public bool IsPartOfBreedingProgram { get; set; }
 
-	private FoodSchedule? _foodSchedule;
-
-	public Komodo()
-	{
-		SetFoodSchedule();
-	}
 
 	public void Venomize()
 	{
@@ -31,13 +27,5 @@ public class Komodo : Reptile
 	public override FoodSchedule? GetFoodSchedule()
 	{
 		return _foodSchedule;
-	}
-
-	private void SetFoodSchedule()
-	{
-		_foodSchedule = new FoodSchedule();
-		_foodSchedule.Add("Morning: Whole prey (rats, rabbits, chickens)");
-		_foodSchedule.Add("Lunch: Whole rodents, eggs, small goats");
-		_foodSchedule.Add("Evening: Larger mammals (deer, wild boar), occasional fish");
 	}
 }

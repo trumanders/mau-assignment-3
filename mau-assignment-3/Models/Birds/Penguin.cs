@@ -7,11 +7,6 @@ public class Penguin : Bird
 
 	private FoodSchedule? _foodSchedule;
 
-	public Penguin()
-	{
-		SetFoodSchedule();
-	}
-
 	public void Toboggan()
 	{
 		throw new NotImplementedException();
@@ -40,12 +35,5 @@ public class Penguin : Bird
 	public override FoodSchedule GetFoodSchedule()
 	{
 		return _foodSchedule;
-	}
-	private void SetFoodSchedule()
-	{
-		_foodSchedule = new FoodSchedule();
-		_foodSchedule.Add("Morning: Herring and capelin (5-8 whole fish)");
-		_foodSchedule.Add("Lunch: Vitamins hidden in fish");
-		_foodSchedule.Add("Evening: Smaller fish (smelt, sardines), optional vitamin supplementation");
 	}
 }

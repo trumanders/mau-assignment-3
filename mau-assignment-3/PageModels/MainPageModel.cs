@@ -12,11 +12,13 @@ public partial class MainPageModel : INotifyPropertyChanged
 	#region Private properties
 
 	private readonly IAnimalService _animalService;
+	private readonly IFoodScheduleService _foodScheduleService;
 	private const int _maxNameLength = 40;
 	private string? _ageInYears;
 	private string? _armSpanInCentimeters;
 	private string? _divingDepthInMeters;
 	private string? _eggIncubationTemperature;
+	private string? _foodSchedule;
 	private string? _jawStrengthPSI;
 	private string? _jumpingHeightInCentimeters;
 	private string? _lactationPeriodInWeeks;
@@ -41,6 +43,8 @@ public partial class MainPageModel : INotifyPropertyChanged
 	private bool _isSaveChangesEnabled;
 	private bool _allowSaveChanges;
 	private bool _isMainPageBlocked;
+	private bool _isListAllSpeciesChecked;
+	private bool _isAddFoodScheduleEnabled;
 
 	private DietTypesEnum _dietTypes;
 	private Gender? _gender;
@@ -49,11 +53,12 @@ public partial class MainPageModel : INotifyPropertyChanged
 	private ImageSource? _animalImage;
 	private Category? _selectedCategory;
 	private Enum? _selectedSpecies;
-	private bool _isListAllSpeciesChecked;
-	private string? _foodScheduleInfo;
 	private Animal? _selectedAnimal;
 	private Animal? _initialSelectedAnimal;
-	private FoodItemPage _foodItemPage;
+	private FoodSchedulePage _foodSchedulePage;
+	private FoodSchedule _selectedFoodSchedule;
+	
+
 	#endregion
 
 	#region Public properties - Animal
@@ -76,7 +81,20 @@ public partial class MainPageModel : INotifyPropertyChanged
 			if (_isSaveChangesEnabled != value)
 			{
 				_isSaveChangesEnabled = value;
-				OnPropertyChanged(); 
+				OnPropertyChanged(IsSaveChangesEnabled); 
+			}
+		}
+	}
+
+	public bool IsAddFoodScheduleEnabled
+	{
+		get => _isAddFoodScheduleEnabled;
+		set
+		{
+			if (_isAddFoodScheduleEnabled != value)
+			{
+				_isAddFoodScheduleEnabled = value;
+				OnPropertyChanged(value, nameof(IsAddFoodScheduleEnabled));
 			}
 		}
 	}
@@ -425,18 +443,6 @@ public partial class MainPageModel : INotifyPropertyChanged
 		}
 	}
 
-	public string? FoodScheduleInfo
-	{
-		get => _foodScheduleInfo;
-		set
-		{
-			if (_foodScheduleInfo != value)
-			{
-				_foodScheduleInfo = value;
-				OnPropertyChanged(nameof(FoodScheduleInfo));
-			}
-		}
-	}
 	public ImageSource? AnimalImage
 	{
 		get => _animalImage;
@@ -473,6 +479,7 @@ public partial class MainPageModel : INotifyPropertyChanged
 	#endregion
 
 	#region Public properties - UI
+	public ObservableCollection<FoodSchedule> FoodSchedules => _foodScheduleService.Items;
 	public ObservableCollection<Animal> Animals => _animalService.Animals;
 	public List<string> ValidationMessages { get; } = new();
 
@@ -545,6 +552,34 @@ public partial class MainPageModel : INotifyPropertyChanged
 			{
 				_selectedAnimal = value;
 				OnPropertyChanged(nameof(SelectedAnimal));
+				OnPropertyChanged(nameof(FoodSchedule));
+			}
+		}
+	}
+
+	public string FoodSchedule
+	{
+		get => _foodSchedule;
+		set
+		{
+			if (_foodSchedule != value)
+			{
+				_foodSchedule = value;
+				OnPropertyChanged(nameof(FoodSchedule));
+			}
+		}
+	}
+		
+
+	public FoodSchedule SelectedFoodSchedule
+	{
+		get => _selectedFoodSchedule;
+		set
+		{
+			if (_selectedFoodSchedule != value)
+			{
+				_selectedFoodSchedule = value;
+				OnPropertyChanged(nameof(SelectedFoodSchedule));
 			}
 		}
 	}
@@ -610,16 +645,19 @@ public partial class MainPageModel : INotifyPropertyChanged
 	public ICommand OnChangeAnimalClickCommand { get; set; }
 	public ICommand OnClearClickCommand { get; set; }
 	public ICommand OnAllAnimalInfoClickCommand { get; set; }
-	public ICommand OnFoodItemsClickCommand { get; set; }
+	public ICommand OnFoodSchedulesClickCommand { get; set; }
 	public ICommand OnMainPageClickCommand { get; set; }
+	public ICommand OnAddScheduleToAnimalClickCommand { get; set; }
 
 
 	#endregion
 
 	#region Public methods
-	public MainPageModel(IAnimalService animalService)
+	public MainPageModel(IAnimalService animalService, IFoodScheduleService foodScheduleService)
 	{
 		_animalService = animalService;
+		_foodScheduleService = foodScheduleService;
+		IsAddFoodScheduleEnabled = false;
 		InitializeCommands();
 	}	
 	
@@ -635,7 +673,11 @@ public partial class MainPageModel : INotifyPropertyChanged
 		IsVenomous = animal.IsVenomous;
 		IsEndangered = animal.IsEndangered;
 		_dietTypes = animal.DietTypes;
-		FoodScheduleInfo = string.Join(Environment.NewLine, animal.GetFoodSchedule()!.GetFoodListInfoStrings());
+		UpdateFoodSchedule(animal);
+		
+		// Fix this so that it gets the correct foodschedule from the dictionary in AnimalService.
+		//FoodScheduleInfo = string.Join(Environment.NewLine, animal.GetFoodSchedule()!.GetFoodListInfoStrings());
+
 		OnPropertyChanged(nameof(DietTypes));
 
 		if (animal is Bird bird)
@@ -728,6 +770,21 @@ public partial class MainPageModel : INotifyPropertyChanged
 		AllowSaveChanges = true;
 	}
 
+	public void UpdateFoodSchedule()
+	{
+		FoodSchedule = string.Join("\n\n", SelectedFoodSchedule.FoodScheduleEvents);		
+	}
+
+	public void UpdateFoodSchedule(Animal animal)
+	{
+		if (_animalService.AnimalFoodSchedules.TryGetValue(animal, out var foodSchedule) &&	foodSchedule !=	null)
+		{
+			FoodSchedule = string.Join("\n\n", foodSchedule.FoodScheduleEvents);
+			return;
+		}
+		FoodSchedule = string.Empty;
+	}
+
 	/// <summary>
 	/// Sets an instance of Animal to the private field.
 	/// </summary>
@@ -760,10 +817,10 @@ public partial class MainPageModel : INotifyPropertyChanged
 		PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 	}
 
-	public void OnFoodItemPageClose()
+	public void OnFoodSchedulePageClose()
 	{
 		IsMainPageBlocked = false;
-		_foodItemPage = null;
+		_foodSchedulePage = null;
 	}
 
 	#endregion
@@ -805,7 +862,6 @@ public partial class MainPageModel : INotifyPropertyChanged
 		Gender = null;
 		MigratoryPattern = null;
 		_dietTypes = DietTypesEnum.None;
-		FoodScheduleInfo = null;
 
 		AnimalImage = null;
 		SelectedCategory = null;
@@ -813,11 +869,13 @@ public partial class MainPageModel : INotifyPropertyChanged
 		IsListAllSpeciesChecked = false;
 
 		SelectedAnimal = null;
+		SelectedFoodSchedule = null;
 		OnPropertyChanged(nameof(DietTypes));
 		OnPropertyChanged(nameof(PersonalName));
 		OnPropertyChanged(nameof(Animals));
-		
+		IsAddFoodScheduleEnabled = false;
 		IsSaveChangesEnabled = false;
+		FoodSchedule = string.Empty;
 	}
 
 	/// <summary>
@@ -839,12 +897,18 @@ public partial class MainPageModel : INotifyPropertyChanged
 
 	private void InitializeCommands()
 	{
-		// When FoodItemPage is open, clicking inside MainPage activates the FoodItemPage
+		OnAddScheduleToAnimalClickCommand = new Command(() =>
+		{
+			UpdateFoodSchedule();
+			IsSaveChangesEnabled = true;
+		});
+
+		// When FoodSchedulePage is open, clicking inside MainPage activates the FoodSchedulePage
 		OnMainPageClickCommand = new Command(() =>
 		{
-			if (_foodItemPage != null)
+			if (_foodSchedulePage != null)
 			{
-				Application.Current.ActivateWindow(_foodItemPage.Window);
+				Application.Current.ActivateWindow(_foodSchedulePage.Window);
 			}
 		});
 
@@ -856,6 +920,7 @@ public partial class MainPageModel : INotifyPropertyChanged
 			{
 				_animalService.Edit(SelectedAnimal!, this);
 				OnPropertyChanged(nameof(Animals));
+				UpdateFoodSchedule(SelectedAnimal!);
 				IsSaveChangesEnabled = false;
 			}
 		});
@@ -949,20 +1014,20 @@ public partial class MainPageModel : INotifyPropertyChanged
 
 
 		// Opens the food item page
-		OnFoodItemsClickCommand = new Command(async () =>
+		OnFoodSchedulesClickCommand = new Command(async () =>
 		{
 			IsMainPageBlocked = true;
-			if (_foodItemPage != null)
+			if (_foodSchedulePage != null)
 			{
-				Application.Current.ActivateWindow(_foodItemPage.Window);
+				Application.Current.ActivateWindow(_foodSchedulePage.Window);
 				return;
 			}
 
-			_foodItemPage = new FoodItemPage(this);
+			_foodSchedulePage = new FoodSchedulePage(this);
 
 			// Set this in the constructor instead?
-			var foodItemPage = new Window { Page = _foodItemPage, Title = "Food Items", Width = 700, Height = 500 };
-			Application.Current.OpenWindow(foodItemPage);
+			var foodSchedulePage = new Window { Page = _foodSchedulePage, Title = "Food Items", Width = 700, Height = 500 };
+			Application.Current.OpenWindow(foodSchedulePage);
 			
 		});
 	}
