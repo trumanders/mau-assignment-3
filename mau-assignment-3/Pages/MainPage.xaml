@@ -915,7 +915,7 @@
 							<Label
 								FontSize="12"
 								HorizontalOptions="Center"
-								Text="Food schedules"
+								Text="Edit food schedules"
 								VerticalOptions="Center" />
 						</Border>
 					</HorizontalStackLayout>
