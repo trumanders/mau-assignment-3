@@ -1,5 +1,6 @@
 ﻿namespace mau_assignment_3;
 
+
 public static class MauiProgram
 {
 	public static MauiApp CreateMauiApp()

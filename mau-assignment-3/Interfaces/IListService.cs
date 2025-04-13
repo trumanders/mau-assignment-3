@@ -2,7 +2,7 @@
 
 public interface IListService<T>
 {
-	ObservableCollection<T> Items { get; }
+	public ObservableCollection<T> Items { get; set; }
 	public int Count { get; set; }
 	public bool Add(T type); // mandatory
 

@@ -2,5 +2,4 @@
 
 public interface IFoodScheduleService : IListService<FoodSchedule>
 {
-	ObservableCollection<FoodSchedule> Items { get; }
 }

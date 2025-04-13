@@ -666,15 +666,16 @@
 						WidthRequest="300" />
 
 					<!--  Food schedule  -->
-					<Label
-						Margin="0,0,0,0"
-						FontAttributes="Bold"
-						Text="Food Schedule" />
+
+					<HorizontalStackLayout Spacing="7">
+						<Label FontAttributes="Bold" Text="Food Schedule: " />
+						<Label Text="{Binding AddedFoodScheduleName}" />
+					</HorizontalStackLayout>
 					<ScrollView>
 						<Editor
 							HeightRequest="170"
 							IsReadOnly="true"
-							Text="{Binding FoodSchedule}"
+							Text="{Binding AddedFoodScheduleEvents}"
 							VerticalTextAlignment="Start" />
 					</ScrollView>
 				</VerticalStackLayout>
@@ -885,6 +886,8 @@
 							HorizontalOptions="Start"
 							Text="Food schedules collection"
 							VerticalOptions="Center" />
+
+						<!--  BUTTON - Add food schedule to Animal  -->
 						<Border
 							Margin="0,0,0,10"
 							Padding="8"
@@ -893,15 +896,17 @@
 							Stroke="Black"
 							StrokeThickness="1">
 							<Border.GestureRecognizers>
-								<TapGestureRecognizer Command="{Binding OnAddScheduleToAnimalClickCommand}" />
+								<TapGestureRecognizer Command="{Binding OnAddFoodScheduleToUIClickCommand}" />
 							</Border.GestureRecognizers>
 							<Label
 								FontSize="12"
 								HorizontalOptions="Center"
 								Text="Add to animal"
-								TextColor="{Binding IsAddFoodScheduleEnabled, Converter={StaticResource BoolToGrayConverter}}"
+								TextColor="{Binding IsAddFoodScheduleToUIButtonEnabled, Converter={StaticResource BoolToGrayConverter}}"
 								VerticalOptions="Center" />
 						</Border>
+
+						<!--  BUTTON - Create  Food schedule  -->
 						<Border
 							Margin="0,0,0,10"
 							Padding="8"
@@ -910,12 +915,31 @@
 							Stroke="Black"
 							StrokeThickness="1">
 							<Border.GestureRecognizers>
-								<TapGestureRecognizer Command="{Binding OnFoodSchedulesClickCommand}" />
+								<TapGestureRecognizer Command="{Binding OnCreateFoodScheduleClickCommand}" />
 							</Border.GestureRecognizers>
 							<Label
 								FontSize="12"
 								HorizontalOptions="Center"
-								Text="Edit food schedules"
+								Text="Create"
+								VerticalOptions="Center" />
+						</Border>
+
+						<!--  BUTTON - Edit Food Schedule  -->
+						<Border
+							Margin="0,0,0,10"
+							Padding="8"
+							BackgroundColor="AliceBlue"
+							HeightRequest="40"
+							Stroke="Black"
+							StrokeThickness="1">
+							<Border.GestureRecognizers>
+								<TapGestureRecognizer Command="{Binding OnEditFoodScheduleClickCommand}" />
+							</Border.GestureRecognizers>
+							<Label
+								FontSize="12"
+								HorizontalOptions="Center"
+								Text="Edit"
+								TextColor="{Binding IsEditButtonEnabled, Converter={StaticResource BoolToGrayConverter}}"
 								VerticalOptions="Center" />
 						</Border>
 					</HorizontalStackLayout>
@@ -923,10 +947,11 @@
 					<!--  Food Schedule Collection  -->
 					<Border Margin="0,0,0,20" Padding="10">
 						<ListView
+							x:Name="foodScheduleListView"
 							Margin="0,0,0,20"
 							HeightRequest="400"
 							HorizontalOptions="Start"
-							ItemTapped="OnFoodScheduleItemClick"
+							ItemTapped="OnFoodScheduleItemClicked"
 							ItemsSource="{Binding FoodSchedules}"
 							SelectedItem="{Binding SelectedFoodSchedule, Mode=TwoWay}"
 							SelectionMode="Single"
@@ -955,7 +980,7 @@
 											<Label
 												Grid.Row="1"
 												Grid.Column="0"
-												Text="{Binding Name}" />
+												Text="{Binding Name, Mode=TwoWay}" />
 											<!--<Label
 												Grid.Row="1"
 												Grid.Column="1"

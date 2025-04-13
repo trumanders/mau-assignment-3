@@ -7,6 +7,9 @@ public class FoodScheduleService : ListService<FoodSchedule>, IFoodScheduleServi
 		InitializeFoodSchedules();		
 	}
 
+	/// <summary>
+	/// Initializes the food schedules for various animals.
+	/// </summary>
 	private void InitializeFoodSchedules()
 	{
 		Add(new FoodSchedule()

@@ -1,4 +1,6 @@
-﻿global using mau_assignment_3.Interfaces;
+﻿global using CommunityToolkit.Mvvm.Messaging;
+global using CommunityToolkit.Mvvm.Messaging.Messages;
+global using mau_assignment_3.Interfaces;
 global using mau_assignment_3.Models;
 global using mau_assignment_3.Models.Birds;
 global using mau_assignment_3.Models.Enums;

@@ -3,11 +3,16 @@
 	x:Class="mau_assignment_3.Pages.FoodSchedulePage"
 	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:converters="clr-namespace:mau_assignment_3.Converters"
+	xmlns:models="clr-namespace:mau_assignment_3.Models"
 	xmlns:pageModels="clr-namespace:mau_assignment_3.PageModels"
+	xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
 	Title="FoodSchedulePage"
 	x:DataType="pageModels:FoodSchedulePageModel">
 	<ContentPage.Resources>
 		<ResourceDictionary>
+			<converters:BoolToGrayConverter x:Key="BoolToGrayConverter" />
+
 			<Style TargetType="Label">
 				<Setter Property="FontSize" Value="16" />
 			</Style>
@@ -19,13 +24,21 @@
 	<Grid Padding="30">
 		<Border Padding="20">
 			<VerticalStackLayout>
+				<Label
+					Margin="0,0,0,30"
+					HorizontalOptions="Center"
+					Style="{StaticResource SubHeadline}"
+					Text="{Binding Header}"
+					VerticalTextAlignment="Center" />
 				<HorizontalStackLayout HorizontalOptions="Start">
-					<VerticalStackLayout Spacing="20" WidthRequest="170">
+					<VerticalStackLayout Spacing="20" WidthRequest="150">
 
 						<!--  Name  -->
-						<Label Text="Name" VerticalOptions="Center" />
-						<Label Text="Add ingredient" VerticalOptions="Center" />
-						<Label Text="Ingredient" VerticalOptions="Center" />
+						<Label
+							Margin="0,0,0,20"
+							Text="Name"
+							VerticalOptions="Center" />
+						<Label Text="Schedule event" VerticalOptions="Center" />
 
 						<!--  BUTTONS  -->
 						<!--  Add  -->
@@ -36,13 +49,14 @@
 							Stroke="Black"
 							StrokeThickness="1"
 							WidthRequest="80">
-							<!--<Border.GestureRecognizers>
-								<TapGestureRecognizer Command="{Binding OnSortAnimalsClickCommand}" CommandParameter="{x:Static enums:SortOption.Name}" />
-							</Border.GestureRecognizers>-->
+							<Border.GestureRecognizers>
+								<TapGestureRecognizer Command="{Binding OnAddButtonClickCommand}" />
+							</Border.GestureRecognizers>
 							<Label
 								FontSize="12"
 								HorizontalOptions="Center"
 								Text="Add"
+								TextColor="{Binding IsAddButtonEnabled, Converter={StaticResource BoolToGrayConverter}}"
 								VerticalOptions="Center" />
 						</Border>
 
@@ -54,13 +68,14 @@
 							Stroke="Black"
 							StrokeThickness="1"
 							WidthRequest="80">
-							<!--<Border.GestureRecognizers>
-								<TapGestureRecognizer Command="{Binding OnSortAnimalsClickCommand}" CommandParameter="{x:Static enums:SortOption.Name}" />
-							</Border.GestureRecognizers>-->
+							<Border.GestureRecognizers>
+								<TapGestureRecognizer Command="{Binding OnChangeButtonClickCommand}" />
+							</Border.GestureRecognizers>
 							<Label
 								FontSize="12"
 								HorizontalOptions="Center"
 								Text="Change"
+								TextColor="{Binding IsChangeButtonEnabled, Converter={StaticResource BoolToGrayConverter}}"
 								VerticalOptions="Center" />
 						</Border>
 
@@ -72,19 +87,77 @@
 							Stroke="Black"
 							StrokeThickness="1"
 							WidthRequest="80">
-							<!--<Border.GestureRecognizers>
-								<TapGestureRecognizer Command="{Binding OnSortAnimalsClickCommand}" CommandParameter="{x:Static enums:SortOption.Name}" />
-							</Border.GestureRecognizers>-->
+							<Border.GestureRecognizers>
+								<TapGestureRecognizer Command="{Binding OnDeleteButtonClickCommand}" />
+							</Border.GestureRecognizers>
 							<Label
 								FontSize="12"
 								HorizontalOptions="Center"
 								Text="Delete"
+								TextColor="{Binding IsDeleteButtonEnabled, Converter={StaticResource BoolToGrayConverter}}"
 								VerticalOptions="Center" />
 						</Border>
 					</VerticalStackLayout>
-					<VerticalStackLayout Spacing="20" WidthRequest="250">
-						<Entry Margin="0,0,0,3" />
-						<Entry />
+					<VerticalStackLayout WidthRequest="400">
+
+						<!--  Name  -->
+						<Entry
+							x:Name="FoodScheduleNameEntry"
+							Margin="0,0,0,20"
+							Text="{Binding FoodScheduleName}"
+							TextChanged="OnNameEntryChanged"
+							VerticalOptions="Start" />
+
+						<!--  Event  -->
+						<Entry
+							x:Name="FoodScheduleEventEntry"
+							Margin="0,0,0,10"
+							Text="{Binding ScheduleEvent, Mode=TwoWay}"
+							TextChanged="OnEventEntryChanged" />
+						<Border
+							Margin="0,0,0,10"
+							Padding="5"
+							HeightRequest="260">
+
+							<!--  Schedule event list  -->
+							<ListView
+								Margin="0,0,0,20"
+								HorizontalOptions="Start"
+								ItemTapped="OnEventListItemClicked"
+								ItemsSource="{Binding FoodScheduleEvents}"
+								SelectedItem="{Binding SelectedScheduleEvent, Mode=TwoWay}"
+								SelectionMode="Single"
+								WidthRequest="400">
+								<ListView.ItemTemplate>
+									<DataTemplate x:DataType="x:String">
+										<ViewCell>
+											<Label Margin="0,0,0,20" Text="{Binding .}" />
+										</ViewCell>
+									</DataTemplate>
+								</ListView.ItemTemplate>
+
+							</ListView>
+						</Border>
+
+						<!--  Save food schedule  -->
+						<Border
+							BackgroundColor="AliceBlue"
+							HeightRequest="30"
+							HorizontalOptions="Start"
+							Stroke="Black"
+							StrokeThickness="1"
+							WidthRequest="80">
+							<Border.GestureRecognizers>
+								<TapGestureRecognizer Command="{Binding OnSaveButtonClickCommand}" />
+							</Border.GestureRecognizers>
+							<Label
+								FontSize="12"
+								HorizontalOptions="Center"
+								Text="Save"
+								TextColor="{Binding IsSaveButtonEnabled, Converter={StaticResource BoolToGrayConverter}}"
+								VerticalOptions="Center" />
+						</Border>
+
 					</VerticalStackLayout>
 				</HorizontalStackLayout>
 			</VerticalStackLayout>

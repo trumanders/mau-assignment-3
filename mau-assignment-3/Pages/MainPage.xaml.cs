@@ -52,18 +52,20 @@ public partial class MainPage : ContentPage
 	private void OnAnimalItemClick(object sender, ItemTappedEventArgs e)
 	{
 		_pageModel.AllowSaveChanges = false;
-		if (e.Item is Animal selectedAnimal)
+		if (e.Item is Animal)
 		{
-			_pageModel.CreateAnimalSnapshot(selectedAnimal);
-			(BindingContext as MainPageModel)?.PopulateGUIFromSelectedAnimal(selectedAnimal);
+			_pageModel.CreateAnimalSnapshot();
+			_pageModel.PopulateGUIFromSelectedAnimal();
 		}
 	}
 
-	private void OnFoodScheduleItemClick(object sender, ItemTappedEventArgs e)
+	/// <summary>
+	/// When an item in the list of food schedules is clicked, enable the button to add a food schedule to the UI.
+	/// </summary>
+	/// <param name="sender"></param>
+	/// <param name="e"></param>
+	private void OnFoodScheduleItemClicked(object sender, ItemTappedEventArgs e)
 	{
-		if (e.Item is FoodSchedule)
-		{
-			_pageModel.IsAddFoodScheduleEnabled = true;
-		}
+		_pageModel.IsAddFoodScheduleToUIButtonEnabled = true;
 	}
 }

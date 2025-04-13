@@ -5,9 +5,8 @@
 // coupling between the AnimalService and the ListService. Injecting ListSerivce
 // here keeps the AnimalService decoupled from the ListService.
 public class AnimalService(
-	IListService<Animal> _listService,
 	IPropertyValidator _propertyValidator,
-	IAlertService _alertService) : IAnimalService
+	IAlertService _alertService) : ListService<Animal>, IAnimalService
 {
 	#region Private fields
 	private static SortOption _previousSortOption;
@@ -15,7 +14,7 @@ public class AnimalService(
 	private static bool _isAnimalAdded;
 	#endregion
 
-	public ObservableCollection<Animal> Animals => _listService.Items;
+	public ObservableCollection<Animal> Animals => Items;
 	public Dictionary<Animal, FoodSchedule> AnimalFoodSchedules { get; set; } = [];
 
 	#region Public methods
@@ -29,13 +28,13 @@ public class AnimalService(
 		if (!ValidateProperties(pageModel))
 			return false;
 
-		
 		var animal = CreateAnimal(pageModel);
 
-		if (pageModel.SelectedFoodSchedule != null)
-			AnimalFoodSchedules.Add(animal, pageModel.SelectedFoodSchedule);
+		// Since FoodSchedule is not part of Animal class, it is added to the dictionary sparately
+		if (pageModel.AddedFoodSchedule != null)
+			AnimalFoodSchedules.Add(animal, pageModel.AddedFoodSchedule);
 
-		_listService.Add(animal);
+		Add(animal);
 
 		_isAnimalAdded = true;
 		return true;
@@ -80,27 +79,21 @@ public class AnimalService(
 		if (!ValidateProperties(pageModel))
 			return false;
 
-		// Check if species is changed in the UI
-		if (pageModel.SelectedSpecies?.ToString() != animal.Species.ToString())
-		{
-			var originalIndex = Animals.IndexOf(animal);
-			var changedAnimal = CreateAnimal(pageModel);
+		var originalIndex = Items.IndexOf(animal);
+		var changedAnimal = CreateAnimal(pageModel);
 
-			if (!_listService.ChangeAt(changedAnimal, originalIndex))
-			{
-				_alertService.ShowEditErrorAlert();
-				return false;
-			}
-			AnimalFoodSchedules.Add(changedAnimal, pageModel.SelectedFoodSchedule);
-		}
-		else
+		if (!ChangeAt(changedAnimal, originalIndex))
 		{
-			animal.MapFromPageModel(pageModel);
+			_alertService.ShowEditErrorAlert();
+			return false;
 		}
 
-		_alertService.ShowSuccessfulEditAlert();			
+		AnimalFoodSchedules.Remove(animal);
+		AnimalFoodSchedules.Add(changedAnimal, pageModel.AddedFoodSchedule);
+
+		_alertService.ShowSuccessfulEditAlert();
 		AnimalFoodSchedules[animal] = pageModel.SelectedFoodSchedule;
-		
+
 		return true;
 	}
 
@@ -118,7 +111,7 @@ public class AnimalService(
 			return;
 		}
 
-		if (!_listService.DeleteAt(index))
+		if (!DeleteAt(index))
 		{
 			_alertService.ShowDeleteErrorAlert();
 			return;
@@ -148,15 +141,14 @@ public class AnimalService(
 		}
 
 		// Create new sorted list
-		var sortedList = _listService
-			.Items.OrderBy(a => a, new AnimalComparer(sortOption, _isReverseOrder))
+		var sortedList = Items.OrderBy(a => a, new AnimalComparer(sortOption, _isReverseOrder))
 			.ToList();
 
 		// Replace old list with new sorted list
-		_listService.Items.Clear();
+		Items.Clear();
 		foreach (var item in sortedList)
 		{
-			_listService.Items.Add(item);
+			Items.Add(item);
 		}
 
 		_previousSortOption = sortOption;
