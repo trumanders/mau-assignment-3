@@ -68,23 +68,24 @@ public partial class ListService<T> : ObservableObject,	IListService<T>
 
 		return true;
 	}
-	public void DeleteAll()
+	public void DeleteAll() 
 	{
-		throw new NotImplementedException();
+		Items.Clear();
 	}
 
-	public T GetAt(int index)
+	public T GetAt(int index) // Not needed
 	{
-		throw new NotImplementedException();
+		var item = CheckIndex(index) ? Items[index] : default;
+		return item!;
 	}
 
 	public string[] ToStringArray()
 	{
-		throw new NotImplementedException();
+		return [.. Items.Select(x => x?.ToString() ?? string.Empty)];
 	}
 
 	public List<string> ToStringList()
 	{
-		throw new NotImplementedException();
+		return [.. Items.Select(x => x?.ToString() ?? string.Empty)];
 	}
 }

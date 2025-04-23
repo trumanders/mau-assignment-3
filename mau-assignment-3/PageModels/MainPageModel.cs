@@ -689,6 +689,7 @@ public partial class MainPageModel : INotifyPropertyChanged
 	public ICommand OnRemoveImageClickCommand { get; set; }
 	public ICommand OnSortAnimalsClickCommand { get; set; }
 	public ICommand OnDeleteAnimalClickCommand { get; set; }
+	public ICommand OnDeleteAllAnimalsClickCommand { get; set; }
 	public ICommand OnChangeAnimalClickCommand { get; set; }
 	public ICommand OnClearClickCommand { get; set; }
 	public ICommand OnAllAnimalInfoClickCommand { get; set; }
@@ -1027,6 +1028,11 @@ public partial class MainPageModel : INotifyPropertyChanged
 			ClearUI();
 		});
 
+		OnDeleteAllAnimalsClickCommand = new Command(() =>
+		{
+			((AnimalService)_animalService).DeleteAll();
+		});
+
 		// Checks which sort button was clicked and calls service
 		// to sort the animal list based on the passed in sorting option
 		OnSortAnimalsClickCommand = new Command<object>((obj) =>
@@ -1056,7 +1062,7 @@ public partial class MainPageModel : INotifyPropertyChanged
 		// Calls service to show all animal info strings
 		OnAllAnimalInfoClickCommand = new Command(() =>
 		{
-			_animalService.ShowAnimalInfoStrings();
+			((AnimalService)_animalService).ShowAllAnimalInfo();
 		});
 
 		OnCreateFoodScheduleClickCommand = new Command(() =>

@@ -7,9 +7,6 @@ public abstract class Mammal : Animal
 	public bool IsCurrentlyNursing { get; set; }
 	public bool IsPregnant { get; set; }
 
-	public override abstract FoodSchedule GetFoodSchedule(); // not needed
-
-
 	public override void MapFromPageModel(MainPageModel pageModel)
 	{
 		base.MapFromPageModel(pageModel);

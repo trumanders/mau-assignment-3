@@ -154,24 +154,10 @@ public class AnimalService(
 		_previousSortOption = sortOption;
 	}
 
-
-	/// <summary>
-	/// Provides the animal at the specified index
-	/// </summary>
-	/// <param name="index">The index of the animal</param>
-	/// <returns>The animal at the specified index</returns>
-	// Not implemented since SelectedAnimal is set directly from the UI when
-	// selecting an animal from the ListView
-	public Animal GetAnimalAt(int index)
+	public void ShowAllAnimalInfo()
 	{
-		return Animals[index];
+		_alertService.ShowInfoStringsAlert(ToStringArray());
 	}
-
-	/// <summary>
-	/// Calls the IAlertService to display all animals' info
-	/// </summary>
-	public void ShowAnimalInfoStrings() =>
-		_alertService.ShowInfoStringsAlert(GetAnimalInfoStrings());
 
 	/// <summary>
 	/// Calls the IPropertyValidator.ValidateProperties method to validate the properties of
@@ -189,24 +175,4 @@ public class AnimalService(
 		return true;
 	}
 	#endregion
-
-	/// <summary>
-	/// Gathers all animals' info from its ToString()-method and returns them as a string array
-	/// </summary>
-	/// <returns>A string array containing all animals' info</returns>
-	private string[] GetAnimalInfoStrings()
-	{
-		var allAnimalInfo = Animals.Select(animal => GetAnimalInfo(animal) + Environment.NewLine + Environment.NewLine).ToArray();
-		return allAnimalInfo;
-	}
-
-	/// <summary>
-	/// 
-	/// </summary>
-	/// <param name="animal"></param>
-	/// <returns></returns>
-	private string GetAnimalInfo(Animal animal) // Not implemented (not described in assignment)
-	{
-		return animal.ToString();
-	}
 }

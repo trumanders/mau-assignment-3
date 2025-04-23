@@ -17,8 +17,6 @@ public abstract class Animal : IAnimal
 		Id = _id++;
 	}
 
-	public abstract FoodSchedule? GetFoodSchedule();
-
 	public virtual void MapFromPageModel(MainPageModel pageModel)
 	{
 		PersonalName = pageModel.PersonalName;

@@ -4,22 +4,6 @@ public class Bat : Mammal
 {
 	public int? WingAreaInCm2 { get; set; }
 
-	private FoodSchedule? _foodSchedule;
-
-	public void Echolocate()
-	{
-		throw new NotImplementedException();
-	}
-	public void Fly()
-	{
-		throw new NotImplementedException();
-	}
-
-	public override FoodSchedule GetFoodSchedule()
-	{
-		return _foodSchedule;
-	}
-
 	public override void MapFromPageModel(MainPageModel pageModel)
 	{
 		base.MapFromPageModel(pageModel);

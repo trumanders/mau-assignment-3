@@ -9,7 +9,7 @@ class AlertService : IAlertService
 
 	public Task ShowInfoStringsAlert(IEnumerable<string> strings)
 	{
-		return ShowAlert("All items info", string.Join("", strings) ?? "No items found", "OK");
+		return ShowAlert("All items info", string.Join("\n", strings) ?? "No items found", "OK");
 	}
 
 	public Task ShowEditErrorAlert()

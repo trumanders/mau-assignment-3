@@ -5,18 +5,6 @@ public class Gorilla : Mammal
 	public int? ArmSpanInCentimeters { get; set; }
 	public bool IsAlphaMale { get; set; }
 
-	private FoodSchedule? _foodSchedule;
-
-	public void ChestDrum()
-	{
-		throw new NotImplementedException();
-	}
-
-	public override FoodSchedule GetFoodSchedule()
-	{
-		return _foodSchedule;
-	}
-
 	public override void MapFromPageModel(MainPageModel pageModel)
 	{
 		base.MapFromPageModel(pageModel);

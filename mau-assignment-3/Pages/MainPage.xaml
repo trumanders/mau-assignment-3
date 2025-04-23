@@ -756,8 +756,7 @@
 						<!--  Button: Sort by name  -->
 						<VerticalStackLayout Spacing="10" VerticalOptions="End">
 
-							<!--  BUTTONS  -->
-							<!--  Sort by name  -->
+							<!--  Button: Sort by name  -->
 							<Border
 								Padding="8"
 								BackgroundColor="AliceBlue"
@@ -774,7 +773,7 @@
 									VerticalOptions="Center" />
 							</Border>
 
-							<!--  Sort by species  -->
+							<!--  Button: Sort by species  -->
 							<Border
 								Margin="0,0,0,30"
 								Padding="8"
@@ -792,7 +791,7 @@
 									VerticalOptions="Center" />
 							</Border>
 
-							<!--  Add image  -->
+							<!--  Button: Add image  -->
 							<Border
 								Padding="10"
 								BackgroundColor="AliceBlue"
@@ -808,7 +807,7 @@
 									VerticalOptions="Center" />
 							</Border>
 
-							<!--  Remove image  -->
+							<!--  Button: Remove image  -->
 							<Border
 								Margin="0,0,0,30"
 								Padding="10"
@@ -825,7 +824,7 @@
 									VerticalOptions="Center" />
 							</Border>
 
-							<!--  Delete  -->
+							<!--  Button: Delete animal  -->
 							<Border
 								Margin="0,0,0,0"
 								Padding="10"
@@ -842,7 +841,24 @@
 									VerticalOptions="Center" />
 							</Border>
 
-							<!--  Save changes  -->
+							<!--  Button: Delete all animals  -->
+							<Border
+								Margin="0,0,0,0"
+								Padding="10"
+								BackgroundColor="AliceBlue"
+								Stroke="Black"
+								StrokeThickness="1">
+								<Border.GestureRecognizers>
+									<TapGestureRecognizer Command="{Binding OnDeleteAllAnimalsClickCommand}" />
+								</Border.GestureRecognizers>
+								<Label
+									FontSize="12"
+									HorizontalOptions="Center"
+									Text="Delete all"
+									VerticalOptions="Center" />
+							</Border>
+
+							<!--  Button: Save changes  -->
 							<Border
 								Margin="0,0,0,0"
 								Padding="10"
@@ -860,7 +876,7 @@
 									VerticalOptions="Center" />
 							</Border>
 
-							<!--  Add animal  -->
+							<!--  Button: Add animal  -->
 							<Border
 								Margin="0,0,0,21"
 								Padding="10"
@@ -939,7 +955,7 @@
 								FontSize="12"
 								HorizontalOptions="Center"
 								Text="Edit"
-								TextColor="{Binding IsEditButtonEnabled, Converter={StaticResource BoolToGrayConverter}}"
+								TextColor="{Binding IsEditFoodScheduleButtonEnabled, Converter={StaticResource BoolToGrayConverter}}"
 								VerticalOptions="Center" />
 						</Border>
 					</HorizontalStackLayout>
@@ -964,11 +980,6 @@
 											Grid.Column="0"
 											HorizontalOptions="Start"
 											Text="Schedule Name" />
-										<!--<Label
-											Grid.Row="0"
-											Grid.Column="1"
-											HorizontalOptions="Start"
-											Text="Species" />-->
 									</Grid>
 									<BoxView BackgroundColor="Gray" HeightRequest="1" />
 								</StackLayout>
@@ -981,10 +992,6 @@
 												Grid.Row="1"
 												Grid.Column="0"
 												Text="{Binding Name, Mode=TwoWay}" />
-											<!--<Label
-												Grid.Row="1"
-												Grid.Column="1"
-												Text="{Binding Species}" />-->
 										</Grid>
 									</ViewCell>
 								</DataTemplate>

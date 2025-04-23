@@ -3,12 +3,6 @@
 public abstract class Reptile : Animal
 {
 	public int? TypicalNumberOfEggsLaid { get; set; }
-	public override abstract FoodSchedule GetFoodSchedule();
-
-	public void ShedSkin()
-	{
-		throw new NotImplementedException();
-	}
 
 	public override void MapFromPageModel(MainPageModel pageModel)
 	{

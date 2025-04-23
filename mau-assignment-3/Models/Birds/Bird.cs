@@ -5,13 +5,6 @@ public abstract class Bird : Animal
 	public MigratoryPattern? MigratoryPattern { get; set; }
 	public int? EggIncubationTemperature { get; set; }
 
-	public override abstract FoodSchedule GetFoodSchedule(); // not needed
-
-	public void Sing()
-	{
-		throw new NotImplementedException();
-	}
-
 	public override void MapFromPageModel(MainPageModel pageModel)
 	{
 		base.MapFromPageModel(pageModel);

@@ -5,18 +5,6 @@ public class Penguin : Bird
 	public int? DivingDepthInMeters { get; set; }
 	public bool IsHandFed { get; set; }
 
-	private FoodSchedule? _foodSchedule;
-
-	public void Toboggan()
-	{
-		throw new NotImplementedException();
-	}
-
-	public void Swim()
-	{
-		throw new NotImplementedException();
-	}
-
 	public override void MapFromPageModel(MainPageModel pageModel)
 	{
 		base.MapFromPageModel(pageModel);
@@ -30,10 +18,5 @@ public class Penguin : Bird
 			$"Diving depth: {(DivingDepthInMeters == null
 				? "" : (DivingDepthInMeters + (DivingDepthInMeters > 1 ? " meters" : " meter")))}\n" +
 			$"Egg incubation temperature: {(EggIncubationTemperature == null ? "" : EggIncubationTemperature + " celcius")}\n";
-	}
-
-	public override FoodSchedule GetFoodSchedule()
-	{
-		return _foodSchedule;
 	}
 }

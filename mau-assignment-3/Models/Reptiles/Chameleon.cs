@@ -5,18 +5,6 @@ public class Chameleon : Reptile
 	public int? TongueLengthInMillimeters { get; set; }
 	public bool HasRegrownTail { get; set; }
 
-	private FoodSchedule? _foodSchedule;
-
-	public void Camouflage()
-	{
-		throw new NotImplementedException();
-	}
-
-	public override FoodSchedule GetFoodSchedule()
-	{
-		return _foodSchedule;
-	}
-
 	public override void MapFromPageModel(MainPageModel pageModel)
 	{
 		base.MapFromPageModel(pageModel);
