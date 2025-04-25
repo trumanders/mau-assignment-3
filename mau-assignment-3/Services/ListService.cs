@@ -73,6 +73,11 @@ public partial class ListService<T> : ObservableObject,	IListService<T>
 		Items.Clear();
 	}
 
+	/// <summary>
+	/// Get an item in the list by index
+	/// </summary>
+	/// <param name="index">The index to get the item from</param>
+	/// <returns>The item at the specified item, or default if index does not exist</returns>
 	public T GetAt(int index) // Not needed
 	{
 		var item = CheckIndex(index) ? Items[index] : default;
@@ -80,11 +85,6 @@ public partial class ListService<T> : ObservableObject,	IListService<T>
 	}
 
 	public string[] ToStringArray()
-	{
-		return [.. Items.Select(x => x?.ToString() ?? string.Empty)];
-	}
-
-	public List<string> ToStringList()
 	{
 		return [.. Items.Select(x => x?.ToString() ?? string.Empty)];
 	}

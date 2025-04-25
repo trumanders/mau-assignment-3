@@ -1028,6 +1028,7 @@ public partial class MainPageModel : INotifyPropertyChanged
 			ClearUI();
 		});
 
+		// Deletes all animlals from the animal collection
 		OnDeleteAllAnimalsClickCommand = new Command(() =>
 		{
 			((AnimalService)_animalService).DeleteAll();
