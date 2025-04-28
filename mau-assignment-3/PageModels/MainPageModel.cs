@@ -927,6 +927,7 @@ public partial class MainPageModel : INotifyPropertyChanged
 		OnPropertyChanged(nameof(PersonalName));
 		OnPropertyChanged(nameof(Animals));
 		IsSaveChangesEnabled = false;
+		AddedFoodSchedule = null;
 		AddedFoodScheduleEvents = string.Empty;
 		AddedFoodScheduleName = string.Empty;
 	}
