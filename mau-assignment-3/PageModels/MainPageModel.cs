@@ -1029,6 +1029,7 @@ public partial class MainPageModel : INotifyPropertyChanged
 		OnDeleteAllAnimalsClickCommand = new Command(() =>
 		{
 			((AnimalService)_animalService).DeleteAll();
+			ClearUI();
 		});
 
 		// Checks which sort button was clicked and calls service
