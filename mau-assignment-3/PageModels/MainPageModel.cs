@@ -14,12 +14,10 @@ public partial class MainPageModel : INotifyPropertyChanged
 
 	private readonly IAnimalService _animalService;
 	private readonly IFoodScheduleService _foodScheduleService;
-	private const int _maxNameLength = 40;
 	private string? _ageInYears;
 	private string? _armSpanInCentimeters;
 	private string? _divingDepthInMeters;
 	private string? _eggIncubationTemperature;
-	private string? _foodSchedule;
 	private string? _jawStrengthPSI;
 	private string? _jumpingHeightInCentimeters;
 	private string? _lactationPeriodInWeeks;
